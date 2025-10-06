@@ -2,10 +2,147 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hello, MCP!</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .welcome {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+
+        .clock-container {
+            margin: 30px 0;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .clock {
+            font-size: 4em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 40px #00ff88;
+            letter-spacing: 0.1em;
+        }
+
+        .date {
+            font-size: 1.5em;
+            margin-top: 10px;
+            color: #ffffff;
+            opacity: 0.8;
+        }
+
+        .timezone {
+            font-size: 1em;
+            margin-top: 5px;
+            color: #cccccc;
+            opacity: 0.7;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .colon {
+            animation: pulse 1s infinite;
+        }
+
+        .footer {
+            margin-top: 30px;
+            font-size: 0.9em;
+            opacity: 0.7;
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello, MCP!</h1>
-    <p>Welcome to the hello-mcp repository.</p>
+    <div class="container">
+        <h1>Hello, MCP!</h1>
+        <p class="welcome">Welcome to the hello-mcp repository.</p>
+        
+        <div class="clock-container">
+            <div class="clock" id="clock">--:--:--</div>
+            <div class="date" id="date">Loading...</div>
+            <div class="timezone" id="timezone">Local Time</div>
+        </div>
+        
+        <p class="footer">🕒 Real-time digital clock powered by JavaScript</p>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+            
+            // Format time with leading zeros
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            // Create time string with animated colons
+            const timeString = `${hours}<span class="colon">:</span>${minutes}<span class="colon">:</span>${seconds}`;
+            document.getElementById('clock').innerHTML = timeString;
+            
+            // Format date
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            };
+            const dateString = now.toLocaleDateString('en-US', options);
+            document.getElementById('date').textContent = dateString;
+            
+            // Display timezone
+            const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById('timezone').textContent = `${timezone} (UTC${now.getTimezoneOffset() <= 0 ? '+' : ''}${-now.getTimezoneOffset()/60})`;
+        }
+
+        // Update clock immediately and then every second
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Add some interactive effects
+        document.querySelector('.clock-container').addEventListener('click', function() {
+            this.style.transform = 'scale(1.05)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+
+        // Add smooth transitions
+        document.querySelector('.clock-container').style.transition = 'transform 0.15s ease';
+    </script>
 </body>
 </html>
